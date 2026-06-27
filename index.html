@@ -1,0 +1,688 @@
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0
+    }
+
+    body {
+        font-family: var(--font-sans)
+    }
+
+    #fb-wrap {
+        width: 100%;
+        height: 100vh;
+        background: #858080af;
+        display: flex;
+        flex-direction: column;
+        /* border-radius: 12px; */
+        overflow: hidden;
+        position: relative;
+        user-select: none
+    }
+
+    #fb-bg {
+        position: absolute;
+        inset: 0;
+        background: #ffffff93;
+        z-index: 0
+    }
+
+    #fb-bg-img {
+        position: absolute;
+        inset: 0;
+        background: #fffefe52;
+        background-size: cover;
+        background-position: center;
+        z-index: 0;
+    }
+
+    .tb-left,
+    .tb-right {
+        display: flex;
+        align-items: center;
+        gap: 6px
+    }
+
+    .tb-center {
+        display: flex;
+        align-items: center;
+        gap: 8px
+    }
+
+    .tb-btn {
+        background: rgb(255, 255, 255);
+        border: 0.5px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        padding: 5px 9px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        transition: background 0.15s
+    }
+
+    .tb-btn:hover {
+        background: rgba(255, 255, 255, 0.2)
+    }
+
+    .tb-btn i {
+        font-size: 15px
+    }
+
+    .tb-title {
+        color: #fff;
+        font-size: 13px;
+        font-weight: 500;
+        opacity: 0.9;
+        max-width: 180px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis
+    }
+
+    .tb-page-info {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+        white-space: nowrap
+    }
+
+    .tb-divider {
+        width: 0.5px;
+        height: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        margin: 0 2px
+    }
+
+    #fb-stage {
+        position: relative;
+        z-index: 5;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 60px;
+        overflow: hidden
+    }
+
+    #prev-btn,
+    #next-btn {
+        position: absolute;
+        z-index: 20;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        border: 0.5px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s
+    }
+
+    #prev-btn {
+        left: 12px
+    }
+
+    #next-btn {
+        right: 12px
+    }
+
+    #prev-btn:hover,
+    #next-btn:hover {
+        background: rgba(0, 0, 0, 0.75);
+        transform: translateY(-50%) scale(1.05)
+    }
+
+    #prev-btn:disabled,
+    #next-btn:disabled {
+        opacity: 0.3;
+        cursor: default
+    }
+
+    #prev-btn:disabled:hover,
+    #next-btn:disabled:hover {
+        transform: translateY(-50%) scale(1)
+    }
+
+    #book {
+        position: relative;
+        /* height: 100% */
+        /* turn.js handles sizing */
+    }
+
+    .page {
+        position: relative;
+        background: #fff;
+        border-radius: 2px;
+        overflow: hidden;
+        /* transition: transform 0.05s; */
+        flex-shrink: 0
+    }
+
+    .page-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        background: #fff
+    }
+
+    .page.left-page {
+        border-radius: 2px 0 0 2px;
+        box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5), inset -7px 0 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .page.right-page {
+        border-radius: 0 2px 2px 0;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5), inset 7px 0 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .page.single-page {
+        border-radius: 2px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6)
+    }
+
+    /* .spine {
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(to right, #ccc, #fff, #ccc);
+        flex-shrink: 0;
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.3)
+    }
+
+    /* .page-fold {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 0 0 30px 30px;
+        border-color: transparent transparent rgba(0, 0, 0, 0.12) transparent;
+        cursor: pointer
+    }
+
+    .page-fold-left {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 30px 0 0 30px;
+        border-color: transparent transparent transparent rgba(0, 0, 0, 0.12);
+        cursor: pointer
+    } */
+
+    #fb-bottombar {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        background: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(8px);
+        border-top: 0.5px solid rgba(255, 255, 255, 0.1);
+        gap: 12px
+    }
+
+    #page-slider {
+        width: 200px;
+        -webkit-appearance: none;
+        appearance: none;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 3px;
+        outline: none;
+        cursor: pointer;
+    }
+
+    #page-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #fff;
+        cursor: pointer;
+    }
+
+    .slider-page-number {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+        font-weight: 500;
+        min-width: 12px;
+    }
+
+    #thumb-tray {
+        position: absolute;
+        bottom: 60px;
+        left: 0;
+        right: 0;
+        z-index: 30;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(12px);
+        border-top: 0.5px solid rgba(255, 255, 255, 0.15);
+        padding: 12px 16px;
+        display: none;
+        gap: 10px;
+        overflow-x: auto;
+        justify-content: center
+    }
+
+    #thumb-tray.open {
+        display: flex
+    }
+
+    .thumb {
+        width: 55px;
+        height: 78px;
+        background: #fff;
+        border-radius: 4px;
+        overflow: hidden;
+        cursor: pointer;
+        border: 2px solid transparent;
+        flex-shrink: 0;
+        transition: border-color 0.15s
+    }
+
+    .thumb:hover {
+        border-color: rgba(255, 255, 255, 0.5)
+    }
+
+    .thumb.active {
+        border-color: #fff
+    }
+
+    .thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block
+    }
+
+    .thumb-label {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 10px;
+        text-align: center;
+        margin-top: 4px
+    }
+
+    #zoom-overlay {
+        display: none;
+        position: absolute;
+        inset: 0;
+        z-index: 50;
+        background: rgba(0, 0, 0, 0.85);
+        align-items: center;
+        justify-content: center;
+        flex-direction: column
+    }
+
+    #zoom-overlay.open {
+        display: flex
+    }
+
+    #zoom-img {
+        max-width: 90%;
+        max-height: 80%;
+        object-fit: contain;
+        border-radius: 4px;
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8)
+    }
+
+    #zoom-close {
+        position: absolute;
+        top: 12px;
+        right: 14px;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.15);
+        border: none;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center
+    }
+
+    #share-menu {
+        display: none;
+        position: absolute;
+        top: 48px;
+        right: 60px;
+        z-index: 40;
+        background: rgba(20, 20, 40, 0.95);
+        backdrop-filter: blur(12px);
+        border: 0.5px solid rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        padding: 8px;
+        min-width: 160px
+    }
+
+    #share-menu.open {
+        display: block
+    }
+
+    .share-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        color: #fff;
+        font-size: 13px;
+        transition: background 0.12s
+    }
+
+    .share-item:hover {
+        background: rgba(255, 255, 255, 0.1)
+    }
+
+    .share-item i {
+        font-size: 16px;
+        width: 20px
+    }
+
+    .flip-anim {
+        animation: flipPage 0.35s ease-in-out
+    }
+
+    .flip-anim {
+        animation: flipPage 0.5s ease-in-out
+    }
+
+    @keyframes flipPage {
+        from {
+            transform: perspective(2000px) rotateY(-180deg);
+            transform-origin: left
+        }
+
+        to {
+            transform: perspective(2000px) rotateY(0deg);
+            transform-origin: left
+        }
+    }
+
+    .flip-anim-r {
+        animation: flipPageR 0.35s ease-in-out
+    }
+
+    .flip-anim-r {
+        animation: flipPageR 0.5s ease-in-out
+    }
+
+    @keyframes flipPageR {
+        from {
+            transform: perspective(2000px) rotateY(180deg);
+            transform-origin: right
+        }
+
+        to {
+            transform: perspective(2000px) rotateY(0deg);
+            transform-origin: right
+        }
+    }
+</style>
+
+<div id="fb-wrap">
+    <div id="fb-bg"></div>
+    <div id="fb-bg-img"></div>
+
+    <div id="fb-toolbar">
+        <div class="tb-left">
+            <span class="tb-title">IPT — Ishaan Powertech</span>
+        </div>
+        <div class="tb-center">
+            <span class="tb-page-info" id="page-info">Page 1 of 8</span>
+        </div>
+        <div class="tb-right">
+            <button class="tb-btn" onclick="toggleThumbs()" title="Thumbnails"><i
+                    class="ti ti-layout-grid"></i></button>
+            <button class="tb-btn" onclick="openZoom()" title="Zoom"><i class="ti ti-zoom-in"></i></button>
+            <div class="tb-divider"></div>
+            <button class="tb-btn" onclick="toggleShare()" title="Share"><i class="ti ti-share"></i></button>
+            <button class="tb-btn" onclick="window.print()" title="Download"><i class="ti ti-download"></i></button>
+        </div>
+    </div>
+
+    <div id="fb-stage">
+        <button id="prev-btn" onclick="prevPage()" disabled><i class="ti ti-chevron-left"></i></button>
+        <div id="book"></div>
+        <button id="next-btn" onclick="nextPage()"><i class="ti ti-chevron-right"></i></button>
+    </div>
+
+    <div id="thumb-tray"></div>
+
+    <div id="fb-bottombar" id="dots-bar"></div>
+
+    <div id="zoom-overlay">
+        <button id="zoom-close" onclick="closeZoom()"><i class="ti ti-x"></i></button>
+        <img id="zoom-img" src="" alt="Page zoom">
+    </div>
+
+    <div id="share-menu">
+        <div class="share-item" onclick="copyLink()"><i class="ti ti-link"></i> Copy link</div>
+        <div class="share-item"><i class="ti ti-brand-whatsapp"></i> WhatsApp</div>
+        <div class="share-item"><i class="ti ti-mail"></i> Email</div>
+        <div class="share-item"><i class="ti ti-brand-linkedin"></i> LinkedIn</div>
+    </div>
+</div>
+
+<!-- Added jQuery and turn.js -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
+
+<script>
+    const pages = ['Page-1.jpg', 'Page-2.jpg', 'Page-3.jpg', 'Page-4.jpg', 'Page-5.jpg', 'Page-6.jpg', 'Page-7.jpg', 'Page-8.jpg'];
+    let current = 0;
+    let thumbsOpen = false;
+    let shareOpen = false;
+
+    const book = document.getElementById('book');
+    const pageInfo = document.getElementById('page-info');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const bottomBar = document.getElementById('fb-bottombar');
+    const thumbTray = document.getElementById('thumb-tray');
+
+    function getPageHeight() {
+        const stage = document.getElementById('fb-stage');
+        return stage.clientHeight - 40;
+    }
+
+    function getPageWidth() { return Math.round(getPageHeight() * 0.707); }
+
+    function renderBook() {
+        const ph = getPageHeight();
+        const pw = getPageWidth();
+
+        const turnOptions = {
+            height: ph,
+            elevation: 50,
+            gradients: true,
+            autoCenter: true,
+            turnCorners: "bl,br",
+            when: {
+                turned: function (event, page, view) {
+                    current = page - 1;
+                    updateUI();
+
+                }
+            }
+        }
+        $(book).turn(turnOptions);
+
+
+        updateUI();
+    }
+
+    function updateUI() {
+        const pageNumber = current + 1;
+        pageInfo.textContent = 'Page ' + pageNumber + ' of ' + pages.length;
+        prevBtn.disabled = pageNumber === 1;
+        nextBtn.disabled = pageNumber === pages.length;
+
+        const isSingle = pageNumber === 1 || pageNumber === pages.length;
+        const newWidth = isSingle ? getPageWidth() : getPageWidth() * 2;
+        const newDisplay = isSingle ? 'single' : 'double';
+
+        $(book).turn('size', newWidth, getPageHeight());
+        $(book).turn('display', newDisplay); // This is now correctly handled by turn.js
+
+        updateSlider();
+        updateThumbs();
+    }
+
+    function buildBook() {
+        pages.forEach(pageImage => {
+            const page = document.createElement('div');
+            page.style.backgroundImage = `url(${pageImage})`;
+            page.style.backgroundSize = 'cover';
+            page.style.backgroundPosition = 'center';
+            book.appendChild(page);
+        });
+    }
+
+    function goToPage(pageIndex) {
+        current = pageIndex;
+        $(book).turn('page', current + 1);
+        updateUI();
+    }
+
+    function nextPage() {
+        $(book).turn('next');
+    }
+
+    function prevPage() {
+        $(book).turn('previous');
+    }
+
+    function buildSlider() {
+        bottomBar.innerHTML = '';
+        const currentPageEl = document.createElement('span');
+        currentPageEl.id = 'slider-page-current';
+        currentPageEl.className = 'slider-page-number';
+        currentPageEl.style.textAlign = 'right';
+
+        const slider = document.createElement('input');
+        slider.type = 'range';
+        slider.id = 'page-slider';
+        slider.min = 0;
+        slider.max = pages.length - 1;
+        slider.oninput = () => goToPage(parseInt(slider.value));
+
+        const totalPagesEl = document.createElement('span');
+        totalPagesEl.id = 'slider-page-total';
+        totalPagesEl.className = 'slider-page-number';
+        totalPagesEl.textContent = pages.length;
+
+        bottomBar.appendChild(currentPageEl);
+        bottomBar.appendChild(slider);
+        bottomBar.appendChild(totalPagesEl);
+    }
+
+    function updateSlider() {
+        const currentPageEl = document.getElementById('slider-page-current');
+        if (currentPageEl) currentPageEl.textContent = current + 1;
+        const slider = document.getElementById('page-slider');
+        if (slider) slider.value = current;
+    }
+
+    function buildThumbs() {
+        thumbTray.innerHTML = '';
+        pages.forEach((p, i) => {
+            const wrap = document.createElement('div');
+            wrap.style.display = 'flex';
+            wrap.style.flexDirection = 'column';
+            wrap.style.alignItems = 'center';
+            const t = document.createElement('div');
+            t.className = 'thumb' + (i === current ? ' active' : '');
+            t.dataset.idx = i;
+            const img = document.createElement('img');
+            img.src = p;
+            img.alt = 'Page ' + (i + 1);
+            t.appendChild(img);
+            t.onclick = () => { goToPage(i); closeThumbs(); };
+            const lbl = document.createElement('div');
+            lbl.className = 'thumb-label';
+            lbl.textContent = i + 1;
+            wrap.appendChild(t);
+            wrap.appendChild(lbl);
+            thumbTray.appendChild(wrap);
+        });
+    }
+
+    function updateThumbs() {
+        document.querySelectorAll('.thumb').forEach(t => {
+            t.classList.toggle('active', parseInt(t.dataset.idx) === current);
+        });
+    }
+
+    function toggleThumbs() {
+        thumbsOpen = !thumbsOpen;
+        thumbTray.classList.toggle('open', thumbsOpen);
+    }
+
+    function closeThumbs() {
+        thumbsOpen = false;
+        thumbTray.classList.remove('open');
+    }
+
+    function openZoom() {
+        document.getElementById('zoom-overlay').classList.add('open');
+        document.getElementById('zoom-img').src = pages[current];
+    }
+
+    function closeZoom() {
+        document.getElementById('zoom-overlay').classList.remove('open');
+    }
+
+    function toggleShare() {
+        shareOpen = !shareOpen;
+        document.getElementById('share-menu').classList.toggle('open', shareOpen);
+    }
+
+    function copyLink() {
+        document.getElementById('share-menu').classList.remove('open');
+        shareOpen = false;
+    }
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight') nextPage();
+        if (e.key === 'ArrowLeft') prevPage();
+        if (e.key === 'Escape') { closeZoom(); closeThumbs(); }
+    });
+
+    document.getElementById('fb-wrap').addEventListener('click', e => {
+        if (shareOpen && !e.target.closest('#share-menu') && !e.target.closest('.tb-btn[onclick*="Share"]')) {
+            shareOpen = false;
+            document.getElementById('share-menu').classList.remove('open');
+        }
+    });
+
+    buildBook();
+    buildSlider();
+    buildThumbs();
+    renderBook();
+
+    window.addEventListener('resize', () => {
+        const ph = getPageHeight();
+        const pw = getPageWidth();
+        $(book).turn('size', pw * 2, ph);
+        goToPage(current);
+    });
+</script>
