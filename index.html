@@ -12,7 +12,7 @@
     #fb-wrap {
         width: 100%;
         height: 100vh;
-        background: #858080af;
+        background: #e9e9e9;
         display: flex;
         flex-direction: column;
         /* border-radius: 12px; */
@@ -24,7 +24,7 @@
     #fb-bg {
         position: absolute;
         inset: 0;
-        background: #ffffff93;
+        background: none;
         z-index: 0
     }
 
@@ -53,19 +53,19 @@
     .tb-btn {
         background: rgb(255, 255, 255);
         border: 0.5px solid rgba(255, 255, 255, 0.2);
-        color: #fff;
-        padding: 5px 9px;
-        border-radius: 6px;
+        color: #0e0e0e;
+        padding: 8px 12px;
+        border-radius: 8px;
         cursor: pointer;
-        font-size: 13px;
+        font-size: 14px;
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 5px;
         transition: background 0.15s
     }
 
     .tb-btn:hover {
-        background: rgba(255, 255, 255, 0.2)
+        background: rgba(255, 255, 255, 0.8)
     }
 
     .tb-btn i {
@@ -122,12 +122,12 @@
         background: rgba(0, 0, 0, 0.5);
         backdrop-filter: blur(4px);
         border: 0.5px solid rgba(255, 255, 255, 0.2);
-        color: #fff;
-        width: 40px;
-        height: 40px;
+        color: #ffffff;
+        width: 48px;
+        height: 48px;
         border-radius: 50%;
         cursor: pointer;
-        font-size: 20px;
+        font-size: 24px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -135,7 +135,7 @@
     }
 
     #prev-btn {
-        left: 12px
+        left: 16px
     }
 
     #next-btn {
@@ -182,14 +182,66 @@
         background: #fff
     }
 
+    /* Add a subtle paper texture overlay to all pages */
+    .page-texture {
+        position: absolute;
+        inset: 0;
+        background-image: url('https://www.transparenttextures.com/patterns/paper.png');
+        mix-blend-mode: multiply;
+        opacity: 0.4;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    /* Use a different, more robust texture for the cover and back pages */
+    #book .page:first-child .page-texture,
+    #book .page:last-child .page-texture {
+        background-image: url('https://www.transparenttextures.com/patterns/leather.png');
+        mix-blend-mode: overlay;
+        opacity: 0.25;
+    }
+
+    .page-content {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
     .page.left-page {
         border-radius: 2px 0 0 2px;
-        box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5), inset -7px 0 15px rgba(0, 0, 0, 0.3);
+        box-shadow: -4px 0 20px rgba(0, 0, 0, 0.4), inset -5px 0 25px rgba(0, 0, 0, 0.25);
     }
 
     .page.right-page {
         border-radius: 0 2px 2px 0;
-        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5), inset 7px 0 15px rgba(0, 0, 0, 0.3);
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4), inset 5px 0 25px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Create an indented stitch effect in the book spine */
+    .page.right-page::before,
+    .page.right-page::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        height: 100%;
+        z-index: 2;
+        /* Position stitches above the texture */
+    }
+
+    /* The dark "thread" of the stitch */
+    .page.right-page::before {
+        left: 0;
+        width: 1px;
+        background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, rgba(74, 44, 21, 0.75) 3px, rgba(74, 44, 21, 0.75) 7px);
+        background-size: 100% 8px;
+    }
+
+    /* The light "highlight" creating the indent effect */
+    .page.right-page::after {
+        left: 1px;
+        width: 1px;
+        background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, rgba(255, 255, 255, 0.3) 3px, rgba(255, 255, 255, 0.3) 7px);
+        background-size: 100% 8px;
     }
 
     .page.single-page {
@@ -201,6 +253,16 @@
     .turn-corner-bl,
     .turn-corner-br {
         cursor: grab;
+    }
+
+    /* Add a more pronounced 3D folding effect during page turn */
+    .turn-page-wrapper .shadow {
+        transition: box-shadow 0.4s ease-in-out;
+    }
+
+    .flipbook .turning .page {
+        /* Add a subtle shadow to the page content itself while turning */
+        box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.1);
     }
 
     /* .spine {
@@ -359,12 +421,12 @@
         right: 14px;
         color: #fff;
         background: rgba(255, 255, 255, 0.15);
-        border: none;
-        width: 32px;
-        height: 32px;
+        border: 0.5px solid rgba(255, 255, 255, 0.2);
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         cursor: pointer;
-        font-size: 18px;
+        font-size: 22px;
         display: flex;
         align-items: center;
         justify-content: center
@@ -617,9 +679,13 @@
     function buildBook() {
         pages.forEach(pageImage => {
             const page = document.createElement('div');
-            page.style.backgroundImage = `url(${pageImage})`;
-            page.style.backgroundSize = 'cover';
-            page.style.backgroundPosition = 'center';
+            const pageContent = document.createElement('div');
+            pageContent.className = 'page-content';
+            pageContent.style.backgroundImage = `url(${pageImage})`;
+            pageContent.style.backgroundSize = 'cover';
+            pageContent.style.backgroundPosition = 'center';
+            page.innerHTML = '<div class="page-texture"></div>'; // Add texture div
+            page.appendChild(pageContent);
             book.appendChild(page);
         });
     }
