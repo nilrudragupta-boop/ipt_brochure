@@ -73,10 +73,10 @@
     }
 
     .tb-title {
-        color: #fff;
-        font-size: 13px;
+        color: #0c0c0c;
+        font-size: 18px;
         font-weight: 500;
-        opacity: 0.9;
+        opacity: 0.3;
         max-width: 180px;
         white-space: nowrap;
         overflow: hidden;
@@ -87,6 +87,11 @@
         color: rgba(255, 255, 255, 0.7);
         font-size: 12px;
         white-space: nowrap
+    }
+
+    #page-info-mobile {
+        display: none; /* Hidden by default */
+        color: rgba(255, 255, 255, 0.7);
     }
 
     .tb-divider {
@@ -189,6 +194,11 @@
     .page.single-page {
         border-radius: 2px;
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6)
+    }
+
+    /* Add grab cursor for turn.js corners */
+    .turn-corner-bl, .turn-corner-br {
+        cursor: grab;
     }
 
     /* .spine {
@@ -436,6 +446,48 @@
             transform-origin: right
         }
     }
+
+    /* --- Mobile Responsiveness --- */
+    @media (max-width: 768px) {
+        #fb-stage {
+            padding: 10px;
+        }
+
+        #prev-btn,
+        #next-btn {
+            display: none; /* Hide side arrows on mobile */
+        }
+
+        #fb-toolbar {
+            padding: 8px 12px;
+        }
+
+        .tb-title {
+            display: none; /* Hide title on mobile */
+        }
+
+        .tb-center {
+            display: none; /* Hide desktop page info */
+        }
+
+        .tb-left {
+            flex-grow: 1;
+        }
+
+        #page-info-mobile {
+            display: block; /* Show mobile page info */
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        #page-slider {
+            width: 120px; /* Make slider smaller */
+        }
+
+        #thumb-tray {
+            bottom: 52px; /* Adjust for smaller bottom bar */
+        }
+    }
 </style>
 
 <div id="fb-wrap">
@@ -445,6 +497,7 @@
     <div id="fb-toolbar">
         <div class="tb-left">
             <span class="tb-title">IPT — Ishaan Powertech</span>
+            <span id="page-info-mobile"></span>
         </div>
         <div class="tb-center">
             <span class="tb-page-info" id="page-info">Page 1 of 8</span>
@@ -492,6 +545,7 @@
     let thumbsOpen = false;
     let shareOpen = false;
 
+    const pageInfoMobile = document.getElementById('page-info-mobile');
     const book = document.getElementById('book');
     const pageInfo = document.getElementById('page-info');
     const prevBtn = document.getElementById('prev-btn');
@@ -513,6 +567,7 @@
         const turnOptions = {
             height: ph,
             elevation: 50,
+            duration: 1000,
             gradients: true,
             autoCenter: true,
             turnCorners: "bl,br",
@@ -533,6 +588,7 @@
     function updateUI() {
         const pageNumber = current + 1;
         pageInfo.textContent = 'Page ' + pageNumber + ' of ' + pages.length;
+        pageInfoMobile.textContent = pageNumber + ' / ' + pages.length;
         prevBtn.disabled = pageNumber === 1;
         nextBtn.disabled = pageNumber === pages.length;
 
