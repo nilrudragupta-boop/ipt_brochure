@@ -16,7 +16,7 @@
         display: flex;
         flex-direction: column;
         /* border-radius: 12px; */
-        overflow: hidden;
+        overflow: auto;
         position: relative;
         user-select: none
     }
@@ -90,7 +90,8 @@
     }
 
     #page-info-mobile {
-        display: none; /* Hidden by default */
+        display: none;
+        /* Hidden by default */
         color: rgba(255, 255, 255, 0.7);
     }
 
@@ -197,7 +198,8 @@
     }
 
     /* Add grab cursor for turn.js corners */
-    .turn-corner-bl, .turn-corner-br {
+    .turn-corner-bl,
+    .turn-corner-br {
         cursor: grab;
     }
 
@@ -455,7 +457,8 @@
 
         #prev-btn,
         #next-btn {
-            display: none; /* Hide side arrows on mobile */
+            display: none;
+            /* Hide side arrows on mobile */
         }
 
         #fb-toolbar {
@@ -463,11 +466,13 @@
         }
 
         .tb-title {
-            display: none; /* Hide title on mobile */
+            display: none;
+            /* Hide title on mobile */
         }
 
         .tb-center {
-            display: none; /* Hide desktop page info */
+            display: none;
+            /* Hide desktop page info */
         }
 
         .tb-left {
@@ -475,17 +480,20 @@
         }
 
         #page-info-mobile {
-            display: block; /* Show mobile page info */
+            display: block;
+            /* Show mobile page info */
             font-size: 13px;
             font-weight: 500;
         }
 
         #page-slider {
-            width: 120px; /* Make slider smaller */
+            width: 120px;
+            /* Make slider smaller */
         }
 
         #thumb-tray {
-            bottom: 52px; /* Adjust for smaller bottom bar */
+            bottom: 52px;
+            /* Adjust for smaller bottom bar */
         }
     }
 </style>
@@ -496,7 +504,7 @@
 
     <div id="fb-toolbar">
         <div class="tb-left">
-            <span class="tb-title">IPT — Ishaan Powertech</span>
+            <span class="tb-title">Ishaan Powertech</span>
             <span id="page-info-mobile"></span>
         </div>
         <div class="tb-center">
@@ -534,6 +542,9 @@
         <div class="share-item"><i class="ti ti-brand-linkedin"></i> LinkedIn</div>
     </div>
 </div>
+
+<!-- Add Tabler Icons for UI buttons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
 <!-- Added jQuery and turn.js -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
